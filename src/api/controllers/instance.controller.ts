@@ -30,6 +30,7 @@ export class InstanceController {
     private readonly chatwootCache: CacheService,
     private readonly baileysCache: CacheService,
     private readonly providerFiles: ProviderFiles,
+    private readonly eventManager: EventManager,
   ) {}
 
   private readonly logger = new Logger('InstanceController');
@@ -44,7 +45,11 @@ export class InstanceController {
         chatwootCache: this.chatwootCache,
         baileysCache: this.baileysCache,
         providerFiles: this.providerFiles,
+        eventManager: this.eventManager,
+        serverUrl: this.configService.get<string>('SERVER_URL'),
+        apiKey: this.configService.get<string>('API_KEY'),
       });
+
 
       if (!instance) {
         throw new BadRequestException('Invalid integration');
