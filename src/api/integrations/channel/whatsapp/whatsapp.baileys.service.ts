@@ -216,6 +216,9 @@ export class BaileysStartupService extends ChannelStartupService {
     public readonly cache: CacheService,
     public readonly chatwootCache: CacheService,
     public readonly baileysCache: CacheService,
+    private readonly eventManager: EventManager,
+    @Inject('SERVER_URL') private readonly serverUrl: string,
+    @Inject('API_KEY') private readonly apiKey: string,
     private readonly providerFiles: ProviderFiles,
   ) {
     super(configService, eventEmitter, prismaRepository, chatwootCache);
