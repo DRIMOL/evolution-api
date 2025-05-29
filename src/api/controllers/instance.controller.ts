@@ -1,6 +1,7 @@
 import { InstanceDto, SetPresenceDto } from '@api/dto/instance.dto';
 import { ChatwootService } from '@api/integrations/chatbot/chatwoot/services/chatwoot.service';
 import { ProviderFiles } from '@api/provider/sessions';
+import { EventManager } from '@api/integrations/event/event.manager';
 import { PrismaRepository } from '@api/repository/repository.service';
 import { channelController, eventManager } from '@api/server.module';
 import { CacheService } from '@api/services/cache.service';
@@ -47,7 +48,7 @@ export class InstanceController {
         providerFiles: this.providerFiles,
         eventManager: this.eventManager,
         serverUrl: this.configService.get<string>('SERVER_URL'),
-        apiKey: this.configService.get<string>('API_KEY'),
+        apiKey: this.configService.get<string>('AUTHENTICATION_API_KEY'),
       });
 
 
