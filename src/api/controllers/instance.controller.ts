@@ -47,8 +47,8 @@ export class InstanceController {
         baileysCache: this.baileysCache,
         providerFiles: this.providerFiles,
         eventManager: this.eventManager,
-        serverUrl: this.configService.get<string>('SERVER_URL'),
-        apiKey: this.configService.get<string>('AUTHENTICATION_API_KEY'),
+        serverUrl: this.configService.get<string>('URL'),
+        apiKey: this.configService.get<string>('AUTHENTICATION').API_KEY.KEY,
       });
 
 
