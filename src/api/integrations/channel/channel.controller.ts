@@ -20,6 +20,9 @@ type ChannelDataType = {
   chatwootCache: CacheService;
   baileysCache: CacheService;
   providerFiles: ProviderFiles;
+  eventManager: any; 
+  serverUrl: string;
+  apiKey: string;
 };
 
 export interface ChannelControllerInterface {
@@ -77,7 +80,6 @@ export class ChannelController {
         data.chatwootCache,
       );
     }
-
     if (instanceData.integration === Integration.WHATSAPP_BAILEYS) {
       return new BaileysStartupService(
         data.configService,
@@ -86,6 +88,9 @@ export class ChannelController {
         data.cache,
         data.chatwootCache,
         data.baileysCache,
+        data.eventManager,
+        data.serverUrl,
+        data.apiKey,
         data.providerFiles,
       );
     }
