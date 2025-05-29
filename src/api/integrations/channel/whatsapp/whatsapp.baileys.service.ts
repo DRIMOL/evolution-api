@@ -1513,6 +1513,25 @@ export class BaileysStartupService extends ChannelStartupService {
             pollUpdates,
             instanceId: this.instanceId,
           };
+          if (pollUpdates) {
+            await this.eventManager.emit({
+              instanceName: this.instance.name,
+              origin: 'whatsapp',
+              event: 'messages.update',
+              data: {
+                remoteJid: key.remoteJid,
+                fromMe: key.fromMe,
+                id: key.id,
+                datetime: Date.now(),
+                owner: this.instanceId,
+                pollUpdates,
+              },
+              serverUrl: this.serverUrl,
+              dateTime: new Date().toISOString(),
+              sender: key.remoteJid,
+              apiKey: this.apiKey, // certifique-se que this.apiKey está definido no seu contexto
+            });
+          }
 
           this.sendDataWebhook(Events.MESSAGES_UPDATE, message);
 
