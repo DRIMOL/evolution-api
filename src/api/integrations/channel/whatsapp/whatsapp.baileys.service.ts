@@ -1435,15 +1435,13 @@ export class BaileysStartupService extends ChannelStartupService {
         if (key.remoteJid !== 'status@broadcast') {
           let pollUpdates: any;
 
-          if (update.pollUpdates) {
-            const pollCreation = await this.findMessage(key);
+
 
             if (pollCreation) {
               pollUpdates = getAggregateVotesInPollMessage({
                 message: pollCreation as proto.IMessage,
                 pollUpdates: update.pollUpdates,
               });
-            }
           }
 
           const findMessage = await this.prismaRepository.message.findFirst({
