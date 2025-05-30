@@ -1434,7 +1434,9 @@ export class BaileysStartupService extends ChannelStartupService {
 
         if (key.remoteJid !== 'status@broadcast') {
           let pollUpdates: any;
-
+            
+          if (update.pollUpdates) {
+            const pollCreation = await this.findMessage(key);
 
 
             if (pollCreation) {
