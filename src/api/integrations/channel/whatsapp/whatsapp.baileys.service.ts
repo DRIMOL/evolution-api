@@ -1134,10 +1134,6 @@ export class BaileysStartupService extends ChannelStartupService {
           ...received,
           pollUpdates: result,
         },
-        server_url: this.serverUrl,
-        date_time: new Date().toISOString(),
-        sender: this.senderJid,
-        apikey: this.apiKey,
       });
     } else {
       // Se não encontrou a enquete original
@@ -1148,10 +1144,6 @@ export class BaileysStartupService extends ChannelStartupService {
           ...received,
           pollUpdates: [],
         },
-        server_url: this.serverUrl,
-        date_time: new Date().toISOString(),
-        sender: this.senderJid,
-        apikey: this.apiKey,
       });
     }
   } catch (error) {
