@@ -1436,7 +1436,7 @@ export class BaileysStartupService extends ChannelStartupService {
           let pollUpdates: any;
             
           if (update.pollUpdates) {
-            const pollCreation = await this.findMessage(key);
+            const pollCreation = await this.getMessage(key);
 
 
             if (pollCreation) {
