@@ -1452,7 +1452,6 @@ export class BaileysStartupService extends ChannelStartupService {
           ...update,         // mensagem recebida crua
           pollUpdates: []    // sobrescreve pollUpdates como array vazio
         },
-        server_url: this.serverUrl,
         date_time: new Date().toISOString(),
         sender: this.senderJid,
         apikey: this.apiKey,
