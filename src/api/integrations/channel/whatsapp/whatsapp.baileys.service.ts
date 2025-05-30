@@ -1432,29 +1432,50 @@ export class BaileysStartupService extends ChannelStartupService {
           }
         }
 
-        if (key.remoteJid !== 'status@broadcast') {
-          let pollUpdates: any;
-            
-          if (update.pollUpdates) {
-            const pollCreation = await this.getMessage(key);
+       if (key.remoteJid !== 'status@broadcast') {
+  let pollUpdates: any;
 
+  if (update.pollUpdates) {
+    const pollCreation = await this.getMessage(key);
 
-            if (pollCreation) {
-              pollUpdates = getAggregateVotesInPollMessage({
-                message: pollCreation as proto.IMessage,
-                pollUpdates: update.pollUpdates,
-              });
-          }
-          }
-          const findMessage = await this.prismaRepository.message.findFirst({
-            where: {
-              instanceId: this.instanceId,
-              key: {
-                path: ['id'],
-                equals: key.id,
-              },
-            },
-          });
+    if (pollCreation) {
+      pollUpdates = getAggregateVotesInPollMessage({
+        message: pollCreation as proto.IMessage,
+        pollUpdates: update.pollUpdates,
+      });
+    } else {
+      // 👇 Se não achou a mensagem original da enquete
+      await this.emitMessage({
+        event: 'messages.update',
+        instance: this.instanceId,
+        data: {
+          ...update,         // mensagem recebida crua
+          pollUpdates: []    // sobrescreve pollUpdates como array vazio
+        },
+        server_url: this.serverUrl,
+        date_time: new Date().toISOString(),
+        sender: this.senderJid,
+        apikey: this.apiKey,
+      });
+
+      // Evita continuar processando
+      return;
+    }
+  }
+
+  const findMessage = await this.prismaRepository.message.findFirst({
+    where: {
+      instanceId: this.instanceId,
+      key: {
+        path: ['id'],
+        equals: key.id,
+      },
+    },
+  });
+
+  // restante do processamento...
+}
+
 
           if (!findMessage) {
             continue;
