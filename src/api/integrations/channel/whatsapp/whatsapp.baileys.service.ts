@@ -1445,7 +1445,7 @@ export class BaileysStartupService extends ChannelStartupService {
                 pollUpdates: update.pollUpdates,
               });
           }
-
+          }
           const findMessage = await this.prismaRepository.message.findFirst({
             where: {
               instanceId: this.instanceId,
