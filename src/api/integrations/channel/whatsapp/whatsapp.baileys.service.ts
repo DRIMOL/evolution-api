@@ -1111,6 +1111,55 @@ export class BaileysStartupService extends ChannelStartupService {
     ) => {
       try {
         for (const received of messages) {
+        if (received.message?.pollUpdateMessage) {
+  const pollKey = {
+    remoteJid: received.key.remoteJid!,
+    id: received.message.pollUpdateMessage.pollCreationMessageKey?.id!,
+    fromMe: true
+  };
+
+  try {
+    const pollCreation = await this.getMessage(pollKey);
+
+    if (pollCreation) {
+      const result = getAggregateVotesInPollMessage({
+        message: pollCreation,
+        pollUpdates: [received],
+      });
+
+      await this.emitMessage({
+        event: 'messages.update',
+        instance: this.instanceId,
+        data: {
+          ...received,
+          pollUpdates: result,
+        },
+        server_url: this.serverUrl,
+        date_time: new Date().toISOString(),
+        sender: this.senderJid,
+        apikey: this.apiKey,
+      });
+    } else {
+      // Se não encontrou a enquete original
+      await this.emitMessage({
+        event: 'messages.update',
+        instance: this.instanceId,
+        data: {
+          ...received,
+          pollUpdates: [],
+        },
+        server_url: this.serverUrl,
+        date_time: new Date().toISOString(),
+        sender: this.senderJid,
+        apikey: this.apiKey,
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao processar pollUpdateMessage:', error);
+  }
+
+  continue; // Evita que o restante do código tente processar de novo
+}
           if (received.message?.conversation || received.message?.extendedTextMessage?.text) {
             const text = received.message?.conversation || received.message?.extendedTextMessage?.text;
 
