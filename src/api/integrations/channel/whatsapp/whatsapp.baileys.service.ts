@@ -1174,21 +1174,21 @@ export class BaileysStartupService extends ChannelStartupService {
             received.messageTimestamp = received.messageTimestamp?.toNumber();
           }
 
-          // --- INÍCIO: Adição para Tratamento de Atualização de Enquete ---
+          // --- INÍCIO: Adição para Tratamento de Atualização de Enquete (Corrigido) ---
           if (received.message?.pollUpdateMessage) {
             this.logger.info(`Recebida atualização de enquete para a chave da mensagem: ${JSON.stringify(received.message.pollUpdateMessage.pollCreationMessageKey)}`);
             try {
               // Busca a mensagem original de criação da enquete.
-              // ATENÇÃO: Verifique se a função 'this.getMessage' retorna o objeto completo necessário.
-              // Pode ser necessário ajustar 'getMessage' ou usar um método de store do Baileys.
               const pollCreationMessage = await this.getMessage(received.message.pollUpdateMessage.pollCreationMessageKey, true); // Usando 'true' para buscar a mensagem completa
 
-              if (pollCreationMessage && pollCreationMessage.message?.pollCreationMessage) {
+              // Adicionada verificação de tipo para corrigir TS2339
+              if (pollCreationMessage && 'message' in pollCreationMessage && pollCreationMessage.message?.pollCreationMessage) {
                  // Agrega os votos usando a função do Baileys
                  const votes = await getAggregateVotesInPollMessage(
                    {
                      message: pollCreationMessage.message, // Conteúdo da mensagem original da enquete
-                     pollUpdates: [received.message.pollUpdateMessage] // A mensagem de atualização do voto recebida
+                     // Corrigido TS2322 com casting temporário (as any) - verificar compatibilidade se persistir erro
+                     pollUpdates: [received.message.pollUpdateMessage] as any // A mensagem de atualização do voto recebida
                    },
                    // Passa o JID do usuário/bot atual. Adapte se necessário.
                    this.client.user.id 
@@ -1197,9 +1197,8 @@ export class BaileysStartupService extends ChannelStartupService {
                  this.logger.info(`Votos agregados: ${JSON.stringify(votes)}`);
 
                  // Prepara os dados para enviar via webhook ou evento interno
-                 // Considere criar um novo tipo de evento em wa.types.ts se necessário (ex: Events.POLL_UPDATE)
                  const payload = {
-                   event: 'poll.update', // Use um nome de evento apropriado
+                   event: Events.POLL_UPDATE, // Corrigido para usar Enum
                    instance: this.instance.name,
                    pollCreationKey: received.message.pollUpdateMessage.pollCreationMessageKey,
                    votes: votes, // Os votos agregados
@@ -1207,11 +1206,11 @@ export class BaileysStartupService extends ChannelStartupService {
                  };
 
                  // Envia os dados via Webhook e/ou EventEmitter
-                 this.sendDataWebhook('poll.update', payload); // Use o mesmo nome de evento
-                 // this.eventEmitter.emit('poll.update', payload); // Descomente se precisar emitir internamente
+                 this.sendDataWebhook(Events.POLL_UPDATE, payload); // Corrigido para usar Enum
+                 // this.eventEmitter.emit(Events.POLL_UPDATE, payload); // Descomente se precisar emitir internamente
 
               } else {
-                this.logger.warn(`Não foi possível encontrar a mensagem original de criação da enquete para a chave: ${JSON.stringify(received.message.pollUpdateMessage.pollCreationMessageKey)}`);
+                this.logger.warn(`Não foi possível encontrar a mensagem original de criação da enquete ou a estrutura esperada para a chave: ${JSON.stringify(received.message.pollUpdateMessage.pollCreationMessageKey)}`);
               }
             } catch (error) {
               this.logger.error(`Erro ao processar atualização de enquete: ${error}`);
