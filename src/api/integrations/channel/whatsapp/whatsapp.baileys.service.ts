@@ -1,6 +1,6 @@
 import { OfferCallDto } from '@api/dto/call.dto';
 import {
-  ArchiveChatDto,
+  ArchiveChatDto,tda,
   BlockUserDto,
   DeleteMessage,
   getBase64FromMediaMessageDto,
@@ -1214,7 +1214,7 @@ export class BaileysStartupService extends ChannelStartupService {
                 // Descriptografa o voto usando o Buffer
                 this.logger.info(`[PollVoteDebug] Chamando decryptPollVote com vote: ${JSON.stringify(received.message.pollUpdateMessage.vote)}`);
                 const decryptedVotes = await decryptPollVote(received.message.pollUpdateMessage.vote, {
-                  pollCreatorJid: this.client.user.id, // Corrigido para usar o JID da sessão atual
+                  pollCreatorJid: pollCreatorJid, // Revertido para usar o JID do criador original
                   pollMsgId: pollMsgId,
                   pollEncKey: messageSecretBuffer, // Usando o Buffer convertido
                   voterJid: voterJid,
