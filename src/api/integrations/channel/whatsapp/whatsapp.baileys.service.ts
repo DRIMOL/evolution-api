@@ -1191,9 +1191,9 @@ export class BaileysStartupService extends ChannelStartupService {
                 this.logger.warn(`[PollVoteDebug] getMessage retornou null ou undefined para a chave ${JSON.stringify(pollCreationKey)}`);
               }
 
-              // Adicionada verificação de tipo e contexto
-              if (pollCreationMessageFull && 'message' in pollCreationMessageFull && pollCreationMessageFull.message?.pollCreationMessage && pollCreationMessageFull.message?.messageContextInfo) {
-                const pollCreationMessage = pollCreationMessageFull.message.pollCreationMessage;
+              // Adicionada verificação de tipo e contexto (corrigido para V3)
+              if (pollCreationMessageFull && 'message' in pollCreationMessageFull && pollCreationMessageFull.message?.pollCreationMessageV3 && pollCreationMessageFull.message?.messageContextInfo) {
+                const pollCreationMessage = pollCreationMessageFull.message.pollCreationMessageV3; // Corrigido para V3
                 const messageSecret = pollCreationMessageFull.message.messageContextInfo.messageSecret;
                 const pollCreatorJid = pollCreationMessageFull.key.remoteJid;
                 const pollMsgId = pollCreationMessageFull.key.id;
