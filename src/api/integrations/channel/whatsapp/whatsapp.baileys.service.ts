@@ -1187,6 +1187,8 @@ export class BaileysStartupService extends ChannelStartupService {
               // Log detalhado do objeto retornado por getMessage
               if (pollCreationMessageFull) {
                 this.logger.info(`[PollVoteDebug] Conteúdo de pollCreationMessageFull: ${JSON.stringify(pollCreationMessageFull, null, 2)}`);
+                this.logger.info(`[PollVoteDebug] ContextInfo from Original Poll Msg: ${JSON.stringify(pollCreationMessageFull.message?.messageContextInfo)}`);
+                this.logger.info(`[PollVoteDebug] ContextInfo from Incoming Update Msg: ${JSON.stringify(received.message?.messageContextInfo)}`); // Log context from incoming msg
               } else {
                 this.logger.warn(`[PollVoteDebug] getMessage retornou null ou undefined para a chave ${JSON.stringify(pollCreationKey)}`);
               }
